@@ -7,6 +7,7 @@ import com.chuwa.calculator.entity.Operation;
 import com.chuwa.calculator.exception.CalculationException;
 import com.chuwa.calculator.service.Calculator;
 import com.chuwa.calculator.util.Constants;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.chuwa.calculator.service.CalculatorService;
 
@@ -17,7 +18,12 @@ import java.util.LinkedList;
 
 @Service
 public class CalculatorServiceImpl implements CalculatorService {
-    private final Calculator calculator = new Calculator();
+    private final Calculator calculator;
+
+    @Autowired
+    public CalculatorServiceImpl (Calculator calculator) {
+        this.calculator = calculator;
+    }
 
     @Override
     public BigDecimal calculate(CalculateRequest request) {

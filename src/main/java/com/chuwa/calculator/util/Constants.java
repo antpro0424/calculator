@@ -8,4 +8,3 @@ public class Constants {
     public static final Integer DEFAULT_SCALE = 10;
     public static final RoundingMode DEFAULT_ROUNDING_MODE = RoundingMode.HALF_UP;
 }
-

@@ -14,8 +14,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CalculatorServiceTest {
-
-    private final CalculatorServiceImpl calculatorService = new CalculatorServiceImpl();
+    private final Calculator calculator = new Calculator();
+    private final CalculatorServiceImpl calculatorService = new CalculatorServiceImpl(calculator);
 
     @Test
     public void testSingleCalculation() {
