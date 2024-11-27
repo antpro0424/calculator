@@ -32,7 +32,7 @@ public class CalculatorTest {
     @Test
     public void testDivision() {
         BigDecimal result = calculator.calculate(Operation.DIVIDE, new BigDecimal("10"), new BigDecimal("2"));
-        assertEquals(new BigDecimal("5"), result);
+        assertEquals(0, new BigDecimal("5").compareTo(result));
     }
 
     @Test
