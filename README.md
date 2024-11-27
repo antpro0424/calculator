@@ -47,3 +47,7 @@ curl --location 'localhost:8080/api/calculator/chain' \
     ]
   }'
 ```
+## **Future improvements**
+- Support for more Operators and Numeric Types. (square, square root, logarithmic, exponential).
+- Support for brackets (e.g (7 + 8) * 10).
+
