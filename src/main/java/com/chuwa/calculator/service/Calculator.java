@@ -1,24 +1,25 @@
 package com.chuwa.calculator.service;
 
 import com.chuwa.calculator.entity.Operation;
-import org.springframework.stereotype.Component;
+import com.chuwa.calculator.util.Constants;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 
-@Component
 public class Calculator {
     private final Map<Operation, OperationHandler> operationHandlers = new HashMap<>();
 
     public Calculator() {
-        registerOperation(Operation.ADD, (num1, num2) -> num1.doubleValue() + num2.doubleValue());
-        registerOperation(Operation.SUBTRACT, (num1, num2) -> num1.doubleValue() - num2.doubleValue());
-        registerOperation(Operation.MULTIPLY, (num1, num2) -> num1.doubleValue() * num2.doubleValue());
+        registerOperation(Operation.ADD, BigDecimal::add);
+        registerOperation(Operation.SUBTRACT, BigDecimal::subtract);
+        registerOperation(Operation.MULTIPLY, BigDecimal::multiply);
         registerOperation(Operation.DIVIDE, (num1, num2) -> {
-            if (num2.doubleValue() == 0) {
-                throw new ArithmeticException("Cannot divide by zero");
+            if (num2.compareTo(BigDecimal.ZERO) == 0) {
+                throw new ArithmeticException(Constants.DIVIDE_BY_ZERO);
             }
-            return num1.doubleValue() / num2.doubleValue();
+            return num1.divide(num2, 20, RoundingMode.HALF_UP);
         });
     }
 
@@ -26,15 +27,16 @@ public class Calculator {
         operationHandlers.put(operation, handler);
     }
 
-    public Number calculate(Operation operation, Number num1, Number num2) {
-        if (!operationHandlers.containsKey(operation)) {
-            throw new UnsupportedOperationException("Operation not supported: " + operation);
+    public BigDecimal calculate(Operation operation, BigDecimal num1, BigDecimal num2) {
+        OperationHandler handler = operationHandlers.get(operation);
+        if (handler == null) {
+            throw new UnsupportedOperationException(Constants.UNSUPPORTED_OPERATION + operation);
         }
-        return operationHandlers.get(operation).apply(num1, num2);
+        return handler.apply(num1, num2);
     }
 
     @FunctionalInterface
     public interface OperationHandler {
-        Number apply(Number num1, Number num2);
+        BigDecimal apply(BigDecimal num1, BigDecimal num2);
     }
 }

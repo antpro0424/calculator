@@ -8,6 +8,7 @@ import lombok.Setter;
 @Getter
 public class CalculateRequest {
     private Operation operation;
-    private Number num1;
-    private Number num2;
+    private String num1;
+    private String num2;
+    private PrecisionSettings precisionSettings;
 }
