@@ -56,7 +56,7 @@ public class CalculatorServiceTest {
         ));
 
         BigDecimal result = calculatorService.chainCalculate(request);
-        assertEquals(new BigDecimal("10.00"), result);
+        assertEquals(new BigDecimal("20.00"), result);
     }
 }
 

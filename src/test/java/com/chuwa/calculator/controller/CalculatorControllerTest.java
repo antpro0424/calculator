@@ -67,7 +67,7 @@ public class CalculatorControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(result -> {
                     String responseBody = result.getResponse().getContentAsString();
-                    assertEquals("10.00", responseBody);
+                    assertEquals("20.00", responseBody);
                 });
 
     }

@@ -13,8 +13,6 @@ import com.chuwa.calculator.service.CalculatorService;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Deque;
-import java.util.LinkedList;
 
 @Service
 public class CalculatorServiceImpl implements CalculatorService {
@@ -54,7 +52,7 @@ public class CalculatorServiceImpl implements CalculatorService {
                 settings.setScale(Constants.DEFAULT_SCALE);
             }
             if (settings.getRoundingMode() == null) {
-                settings.setRoundingMode(RoundingMode.HALF_UP); // 如果 RoundingMode 未设置，使用默认值
+                settings.setRoundingMode(RoundingMode.HALF_UP);
             }
         }
         return settings;
@@ -65,35 +63,18 @@ public class CalculatorServiceImpl implements CalculatorService {
     public BigDecimal chainCalculate(ChainRequest request) {
         PrecisionSettings precisionSettings = getDefaultPrecisionSettings(request.getPrecisionSettings());
         try {
-            Deque<BigDecimal> operandStack = new LinkedList<>();
-            Deque<Operation> operatorStack = new LinkedList<>();
-
-            BigDecimal currentValue = new BigDecimal(request.getInitialValue());
-            operandStack.push(currentValue);
+            BigDecimal initialValue = new BigDecimal(request.getInitialValue());
+            if (request.getOperations().isEmpty()) {
+                return applyPrecision(initialValue, precisionSettings);
+            }
+            BigDecimal result = initialValue;
 
             for (ChainRequest.OperationItem item : request.getOperations()) {
                 Operation operation = item.getOperation();
                 BigDecimal operand = new BigDecimal(item.getOperand());
-
-                if (operation == Operation.MULTIPLY || operation == Operation.DIVIDE) {
-                    BigDecimal previousOperand = operandStack.pop();
-                    BigDecimal result = calculator.calculate(operation, previousOperand, operand);
-                    operandStack.push(result);
-                } else {
-                    operatorStack.push(operation);
-                    operandStack.push(operand);
-                }
+                result = calculator.calculate(operation, result, operand);
             }
-
-            while (!operatorStack.isEmpty()) {
-                BigDecimal rightOperand = operandStack.pop();
-                BigDecimal leftOperand = operandStack.pop();
-                Operation operation = operatorStack.pop();
-
-                BigDecimal result = calculator.calculate(operation, leftOperand, rightOperand);
-                operandStack.push(result);
-            }
-            return applyPrecision(operandStack.pop(), precisionSettings);
+            return applyPrecision(result, precisionSettings);
         } catch (Exception e) {
             throw new CalculationException("Error during chain calculation: " + e.getMessage());
         }
