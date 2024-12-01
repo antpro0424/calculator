@@ -18,6 +18,5 @@ public class ChainRequest {
     public static class OperationItem {
         private Operation operation;
         private String operand;
-
     }
 }
